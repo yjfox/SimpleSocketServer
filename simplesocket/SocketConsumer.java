@@ -6,7 +6,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class SocketConsumer {
+public class SocketConsumer implements Runnable {
+	
 	static class SocketWorker implements Runnable {
 		Socket socket;
 
@@ -52,7 +53,7 @@ public class SocketConsumer {
 		this.running = val;
 	}
 
-	public void startConsumer() {
+	public void run() {
 		running = true;
 		while (running) {
 			Socket socket = blkque.poll();

@@ -36,6 +36,7 @@ public class BlockingQueue<T> {
 				}
 			}
 			queue.add(element);
+			System.out.println("after add size: " + queue.size());
 			isEmptyCondition.signalAll();
 		} finally {
 			lock.unlock();
@@ -54,6 +55,7 @@ public class BlockingQueue<T> {
 				}
 			}
 			ret = queue.poll();
+			System.out.println("after poll size:" + queue.size());
 			isFullCondition.signalAll();
 		} finally {
 			lock.unlock();
@@ -66,6 +68,6 @@ public class BlockingQueue<T> {
 	}
 
 	private boolean isEmpty() {
-		return queue.size() == 0;
+		return queue.isEmpty();
 	}
 }

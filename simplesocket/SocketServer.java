@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class SocketServer {
+public class SocketServer implements Runnable {
 	private final int PORT;
 	private final BlockingQueue<Socket> blkque;
 	private ServerSocket serverSocket;
@@ -21,7 +21,7 @@ public class SocketServer {
 		this.running = val;
 	}
 
-	public void startServer() {
+	public void run() {
 		try {
 			serverSocket = new ServerSocket(PORT);
 			listen();
@@ -56,8 +56,10 @@ public class SocketServer {
 		final int BLOCK_QUEUE_SIZE = 3;
 		final BlockingQueue<Socket> blkque = new BlockingQueue<Socket>(BLOCK_QUEUE_SIZE);
 		SocketServer server = new SocketServer(blkque, PORT);
-		server.startServer();
+		Thread serverThread = new Thread(server);
+		serverThread.start();
 		SocketConsumer skConsumer = new SocketConsumer(blkque);
-		skConsumer.startConsumer();
+		Thread consumerThread = new Thread(skConsumer);
+		consumerThread.start();
 	}
 }
