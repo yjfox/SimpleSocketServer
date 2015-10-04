@@ -40,12 +40,28 @@ public class SocketConsumer {
 		}
 	}
 
-	public void add(Socket socket) {
-		SocketWorker skWorker = new SocketWorker(socket);
-		start(skWorker);
+	private final BlockingQueue<Socket> blkque;
+	private boolean running;
+	
+	SocketConsumer(BlockingQueue<Socket> blkque) {
+		this.blkque = blkque;
+		running = false;
+	}
+	
+	public void setRunning(boolean val) {
+		this.running = val;
 	}
 
-	private void start(SocketWorker skWorker) {
+	public void startConsumer() {
+		running = true;
+		while (running) {
+			Socket socket = blkque.poll();
+			SocketWorker skWorker = new SocketWorker(socket);
+			startWorker(skWorker);
+		}
+	}
+
+	private void startWorker(SocketWorker skWorker) {
 		Thread skWorkerThread = new Thread(skWorker);
 		skWorkerThread.start();
 	}
